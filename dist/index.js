@@ -1022,11 +1022,15 @@ function prepareExistingDirectory(git, repositoryPath, repositoryUrl, clean, ref
         let remove = false;
         // Check whether using git or REST API
         if (!git) {
+		core.info(`Not git, removing!`)
             remove = true;
         }
         // Fetch URL does not match
         else if (!fsHelper.directoryExistsSync(path.join(repositoryPath, '.git')) ||
             repositoryUrl !== (yield git.tryGetFetchUrl())) {
+		const gitDirectoryExists = fsHelper.directoryExistsSync(path.join(repositoryPath, '.git'))
+		const gitFetchUrl = yield git.tryGetFetchUrl()
+		core.info(`Removing because [Directory exists: ${gitDirectoryExists}], Fetch url: ${gitFetchUrl}, Repository url: ${repositoryUrl}`)
             remove = true;
         }
         else {
